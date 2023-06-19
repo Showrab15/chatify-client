@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link  } from 'react-router-dom';
+import { Link, useNavigate  } from 'react-router-dom';
 import {  FaEye, FaEyeSlash } from 'react-icons/fa';
 import { AuthContext } from '../Provider/AuthProvider';
 import add  from '../../src/assets/add.png'
@@ -20,32 +20,67 @@ const SignUp = () => {
 
     const { createUser ,userUpdateProfile} = useContext(AuthContext);
     const [showPassword, setShowPassword] = useState(false);
-
+const navigate = useNavigate();
     const user_img_hosting_url = `https://api.imgbb.com/1/upload?key=${user_img_hosting_token}`
 
 
 
-    const onSubmit = (data) => {
-        console.log(data);
-        const formData = new FormData();
-        formData.append('image', data.image[0])
+    // const onSubmit = (data) => {
+    //     console.log(data);
+    //     const formData = new FormData();
+    //     formData.append('image', data.image[0])
 
-        fetch(user_img_hosting_url, {
-            method: 'POST',
-            body: formData
-        })
-        .then(res=> res.json()) 
-        .then(imgResponse=> {
-            if(imgResponse.success){
-                const imgURL = imgResponse.data.display_url;
-                createUser(data.email, data.password, imgURL)
+    //     fetch(user_img_hosting_url, {
+    //         method: 'POST',
+    //         body: formData
+    //     })
+    //     .then(res=> res.json()) 
+    //     .then(imgResponse=> {
+    //         if(imgResponse.success){
+    //             const imgURL = imgResponse.data.display_url;
+    //             createUser(data.email, data.password, imgURL)
+    //             .then((result) => {
+    //                 const loggedUser = result.user;
+    //                 console.log(loggedUser);
+    
+    //                 userUpdateProfile( data.name, data.email, imgURL)
+    //                     .then(() => {
+    //                         const saveUser = { name: data.name, email: data.email, imgURL:imgURL};
+    //                         fetch('http://localhost:5000/users', {
+    //                             method: 'POST',
+    //                             headers: {
+    //                                 'content-type': 'application/json',
+    //                             },
+    //                             body: JSON.stringify(saveUser),
+    //                         })
+    //                             .then((res) => res.json())
+    //                             .then((data) => {
+    //                                 if (data.insertedId) {
+    //                                     reset();
+    //                                     navigate('/convo')
+    //                                 }
+    //                             });
+    //                     })
+    //                     .catch((error) => console.log(error));
+    //             });
+    //         }
+    //     })    
+
+       
+    // };
+
+
+
+    const onSubmit = (data) => {
+      
+                createUser(data.email, data.password)
                 .then((result) => {
                     const loggedUser = result.user;
                     console.log(loggedUser);
     
-                    userUpdateProfile( data.name, data.email, imgURL)
+                    userUpdateProfile( data.name, data.email)
                         .then(() => {
-                            const saveUser = { name: data.name, email: data.email, imgURL:imgURL};
+                            const saveUser = { name: data.name, email: data.email};
                             fetch('http://localhost:5000/users', {
                                 method: 'POST',
                                 headers: {
@@ -57,14 +92,13 @@ const SignUp = () => {
                                 .then((data) => {
                                     if (data.insertedId) {
                                         reset();
-                                        
+                                        navigate('/convo')
                                     }
                                 });
                         })
                         .catch((error) => console.log(error));
                 });
-            }
-        })    
+       
 
        
     };
@@ -77,7 +111,7 @@ const SignUp = () => {
         <div className="card w-96 mx-auto bg-green-500 shadow-xl">
             <form onSubmit={handleSubmit(onSubmit)} className="card-body">
             <div className="form-control mx-auto">
-    <input  {...register("image", { required: true })} style={{ display: "none" }} type="file" name="photoURL" id="file" />
+    <input  {...register("image")} style={{ display: "none" }} type="file" name="photoURL" id="file" />
     <label htmlFor="file">
         <img className="w-20 h-20 cursor-pointer" src={add} alt="" />
     </label>

@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import SignUp from './SignUp';
+import { AuthContext } from '../Provider/AuthProvider';
+import Conversations from './Conversations';
 
 const Home = () => {
+    const {user} = useContext(AuthContext)
     return (
         <div>
-            this is home 
-            <Link to="/signup" > Signup</Link>
-            <SignUp></SignUp>
+           {user ? <Conversations></Conversations> : <SignUp></SignUp>}
         </div>
     );
 };
